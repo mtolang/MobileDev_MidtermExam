@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sample_project/functions/add_functions.dart';
 
 class AddPatientScreen extends StatefulWidget {
   const AddPatientScreen({super.key});
@@ -23,10 +24,6 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
     _feetController.dispose();
     _inchesController.dispose();
     super.dispose();
-  }
-
-  double calculateHeightInMeters(int feet, int inches) {
-    return (feet * 0.3048) + (inches * 0.0254);
   }
 
   @override
@@ -130,30 +127,18 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                 final weight = double.tryParse(_weightController.text) ?? 0;
                 final feet = int.tryParse(_feetController.text) ?? 0;
                 final inches = int.tryParse(_inchesController.text) ?? 0;
-                final height = calculateHeightInMeters(feet, inches);
 
-                if (name.isNotEmpty &&
-                    gender.isNotEmpty &&
-                    weight > 0 &&
-                    height > 0) {
-                  final bmi = weight / (height * height);
-                  final category = bmi < 18.5
-                      ? 'Underweight'
-                      : bmi < 24.9
-                          ? 'Normal weight'
-                          : bmi < 29.9
-                              ? 'Overweight'
-                              : 'Obesity';
+                final patientData = preparePatientData(
+                  name: name,
+                  gender: gender,
+                  age: age,
+                  weight: weight,
+                  feet: feet,
+                  inches: inches,
+                );
 
-                  Navigator.of(context).pop({
-                    'name': name,
-                    'gender': gender,
-                    'age': age,
-                    'weight': weight,
-                    'height': height,
-                    'bmi': bmi,
-                    'category': category,
-                  });
+                if (patientData != null) {
+                  Navigator.of(context).pop(patientData);
                 }
               },
               child: const Text('Add Patient'),

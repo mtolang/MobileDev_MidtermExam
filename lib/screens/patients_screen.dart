@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'add_patient_screen.dart';
+import 'package:sample_project/functions/patients_functions.dart';
 
 class PatientsScreen extends StatefulWidget {
   const PatientsScreen({super.key});
@@ -21,22 +21,8 @@ class _PatientsScreenState extends State<PatientsScreen> {
     },
   ];
 
-  double calculateBMI(double weight, double height) {
-    return weight / (height * height);
-  }
-
-  void _addPatient() async {
-    final newPatient = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const AddPatientScreen(),
-      ),
-    );
-
-    if (newPatient != null) {
-      setState(() {
-        patients.add(newPatient);
-      });
-    }
+  void updatePatients() {
+    setState(() {});
   }
 
   @override
@@ -82,15 +68,13 @@ class _PatientsScreenState extends State<PatientsScreen> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.edit, color: Colors.blue),
-                      onPressed: () {}, // Add edit functionality if needed
+                      onPressed: () =>
+                          editPatient(context, index, patients, updatePatients),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.check,
-                          color: Colors.green), // Changed to check icon
-                      onPressed: () {
-                        // Add functionality for the check icon if needed
-                        print('Check icon pressed for ${patient['name']}');
-                      },
+                      icon: const Icon(Icons.check, color: Colors.green),
+                      onPressed: () =>
+                          navigateToRecordsScreen(context, patient),
                     ),
                   ],
                 ),
@@ -100,7 +84,8 @@ class _PatientsScreenState extends State<PatientsScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addPatient,
+        onPressed: () =>
+            addPatient(context, patients).then((_) => updatePatients()),
         backgroundColor: Colors.lightBlue[900],
         child: const Icon(Icons.add),
       ),
